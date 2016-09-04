@@ -28,3 +28,5 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+network-test/Library/metadata/
+network-test/Library/ShaderCache/
