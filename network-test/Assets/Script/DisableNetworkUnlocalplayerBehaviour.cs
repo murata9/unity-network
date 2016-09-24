@@ -20,12 +20,12 @@ public class DisableNetworkUnlocalplayerBehaviour : NetworkBehaviour {
 	
     void OnApplicationFocus(bool focusState)
     {
-        //if (this.isLocalPlayer)
-        //{
-        //    foreach (var b in behaviours)
-        //    {
-        //        b.enabled = focusState;
-        //    }
-        //}
-    }
+		if (this.isLocalPlayer)
+		{
+			foreach (var b in behaviours)
+			{
+				b.enabled = focusState;
+			}
+		}
+	}
 }

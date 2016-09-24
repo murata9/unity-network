@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
-public class Player_SyncPosition : NetworkBehaviour
+[NetworkSettings(channel=0, sendInterval=0.0033f)]
+public class PlayerSyncPosition : NetworkBehaviour
 {
 	[SyncVar]
 	private Vector3 syncPos; // ホストから全クライアントに送られる
@@ -18,9 +20,22 @@ public class Player_SyncPosition : NetworkBehaviour
 	// 0.5unitを越えなければ移動していないこととする
 	private float threshold = 0.5f;
 
+	// UI
+	private NetworkClient nClient;
+	private int latency; // 遅延時間
+	private Text latencyText; // 遅延時間表示用テキスト
+	
+	void Start()
+	{
+		// NetworkClientとTextをキャッシュする
+		nClient = GameObject.Find("NetWorkManager").GetComponent<NetworkManager>().client;
+		latencyText = GameObject.Find("Latency Text").GetComponent<Text>();
+	}
+
 	void Update()
 	{
 		LerpPosition();
+		ShowLatency();
 	}
 
 	void FixedUpdate()
@@ -60,5 +75,14 @@ public class Player_SyncPosition : NetworkBehaviour
 			CmdProvidePositionToServer(myTransform.position);
 			lastPos = myTransform.position;
 		}
+	}
+
+	void ShowLatency()
+	{
+		if (!isLocalPlayer) return;
+		// latencyを取得
+		latency = nClient.GetRTT();
+		// latencyを表示
+		latencyText.text = latency.ToString();
 	}
 }

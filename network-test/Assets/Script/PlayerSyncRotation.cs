@@ -2,7 +2,8 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class Player_SyncRotation : NetworkBehaviour {
+[NetworkSettings(channel = 0, sendInterval = 0.0033f)]
+public class PlayerSyncRotation : NetworkBehaviour {
 
 	// SyncVar: ホストサーバーからクライアントに送られる
 	// プレイヤーの角度
