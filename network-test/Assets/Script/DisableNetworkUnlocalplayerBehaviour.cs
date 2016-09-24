@@ -7,7 +7,9 @@ public class DisableNetworkUnlocalplayerBehaviour : NetworkBehaviour {
     Behaviour[] behaviours;
 
 	void Start () {
-	    if (!this.isLocalPlayer)
+        Debug.Log("isLocalPlayer?" + this.isLocalPlayer);
+
+        if (!this.isLocalPlayer)
         {
             foreach (var b in behaviours)
             {
@@ -18,12 +20,12 @@ public class DisableNetworkUnlocalplayerBehaviour : NetworkBehaviour {
 	
     void OnApplicationFocus(bool focusState)
     {
-        if (this.isLocalPlayer)
-        {
-            foreach (var b in behaviours)
-            {
-                b.enabled = focusState;
-            }
-        }
+        //if (this.isLocalPlayer)
+        //{
+        //    foreach (var b in behaviours)
+        //    {
+        //        b.enabled = focusState;
+        //    }
+        //}
     }
 }
