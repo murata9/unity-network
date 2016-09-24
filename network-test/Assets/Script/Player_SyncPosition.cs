@@ -12,10 +12,20 @@ public class Player_SyncPosition : NetworkBehaviour
 	[SerializeField]
 	float lerpRate = 15;
 
+	// 前フレームの最終地点
+	private Vector3 lastPos;
+	// threshold: しきい値、境目となる値のこと
+	// 0.5unitを越えなければ移動していないこととする
+	private float threshold = 0.5f;
+
+	void Update()
+	{
+		LerpPosition();
+	}
+
 	void FixedUpdate()
 	{
 		TransmitPosition();
-		LerpPosition();
 	}
 
 	// ポジション補間
@@ -35,6 +45,8 @@ public class Player_SyncPosition : NetworkBehaviour
 	{
 		// サーバー側が受け取る値
 		syncPos = pos;
+		// ホストなら毎フレーム呼ばれていた
+		// Debug.Log("CmdProvidePositionToServer");
 	}
 
 	// クライアントのみ実行される
@@ -42,9 +54,11 @@ public class Player_SyncPosition : NetworkBehaviour
 	// 位置情報を送るメソッド
 	void TransmitPosition()
 	{
-		if (isLocalPlayer)
+		if (!isLocalPlayer) return;
+		if (Vector3.Distance(myTransform.position, lastPos) > threshold)
 		{
 			CmdProvidePositionToServer(myTransform.position);
+			lastPos = myTransform.position;
 		}
 	}
 }
