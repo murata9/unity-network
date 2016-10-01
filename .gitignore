@@ -33,3 +33,4 @@ network-test/Library/ShaderCache/
 network-test/Library/*
 network-test/Temp/*
 network-test/network-test_Data/output_log.txt
+network-test/network-test_Data
