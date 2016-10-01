@@ -9,6 +9,12 @@ public class PlayerHealth : NetworkBehaviour {
 	private int health = 100;
 
 	private Text healthText;
+	private bool shouldDie = false;
+	public bool isDead = false;
+	// 死んだときに機能するDelegateとEvent
+	// Event: メソッドを登録しておき、任意のタイミングで呼び出す
+	public delegate void DieDelegate();
+	public event DieDelegate EventDie;
 
 	void Start()
 	{
@@ -16,6 +22,31 @@ public class PlayerHealth : NetworkBehaviour {
 		healthText = GameObject.Find("Health Text").GetComponent<Text>();
 		if (healthText == null) Debug.LogError("HealthText is Null!");
 		SetHealthText();
+	}
+
+	void Update()
+	{
+		CheckCondition();
+	}
+
+	void CheckCondition()
+	{
+		// HPが0以下になったとき
+		if (health <= 0 && !shouldDie && !isDead)
+		{
+			shouldDie = true;
+		}
+
+		if (health <= 0 && shouldDie)
+		{
+			// Eventが登録されているとき
+			if (EventDie != null)
+			{
+				// Event実行
+				EventDie();
+			}
+			shouldDie = false;
+		}
 	}
 
 	void SetHealthText()
