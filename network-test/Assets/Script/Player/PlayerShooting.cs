@@ -24,6 +24,12 @@ public class PlayerShooting :  NetworkBehaviour{
 		{
 			Shooting();
 		}
+		// debug
+		// 自殺デバッグコマンド
+		if (Input.GetKeyDown(KeyCode.K))
+		{
+			GetComponent<PlayerHealth>().DeductHealth(99999);
+		}
 	}
 
 	void Shooting()

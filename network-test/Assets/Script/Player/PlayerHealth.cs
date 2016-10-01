@@ -15,6 +15,9 @@ public class PlayerHealth : NetworkBehaviour {
 	// Event: メソッドを登録しておき、任意のタイミングで呼び出す
 	public delegate void DieDelegate();
 	public event DieDelegate EventDie;
+	// Player再生成のためのEvent
+	public delegate void RespawnDelegate();
+	public event RespawnDelegate EventRespawn;
 
 	void Start()
 	{
@@ -39,13 +42,25 @@ public class PlayerHealth : NetworkBehaviour {
 
 		if (health <= 0 && shouldDie)
 		{
-			// Eventが登録されているとき
+			// EventDieが登録されているとき
 			if (EventDie != null)
 			{
-				// Event実行
+				// EventDie実行
 				EventDie();
 			}
 			shouldDie = false;
+		}
+
+		// HPが1以上あるのにisDead=trueの時 => 復活した時
+		if (health > 0 && isDead)
+		{
+			// EventRespawnに何か登録されているとき
+			if (EventRespawn != null)
+			{
+				//EventRespawn実行
+				EventRespawn();
+			}
+			isDead = false;
 		}
 	}
 
@@ -59,6 +74,13 @@ public class PlayerHealth : NetworkBehaviour {
 	public void DeductHealth(int dmg)
 	{
 		health -= dmg;
+	}
+
+	public void ResetHealth()
+	{
+		// PlayerRespawnスクリプトのCmdRespawnOnServerが[Command]のため
+		// SyncVarが機能する
+		health = 100;
 	}
 
 	// hookメソッド
