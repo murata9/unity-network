@@ -11,18 +11,30 @@ public class ZombieTarget : NetworkBehaviour {
 	// ゾンビがプレイヤーを探知する半径
 	private float radius = 100f;
 
+	[SerializeField]
+	private float interval = 0.2f;
+
 	void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
 		GameManagerRefarences.NullCheck(agent, "agent");
 		myTransform = this.transform;
 		raycastLayer = 1 << LayerMask.NameToLayer("Player");
+		// コルーチンの実行
+		if (isServer)
+		{
+			StartCoroutine(DoCheck());
+		}
 	}
 
-	void FixedUpdate()
+	IEnumerator DoCheck()
 	{
-		SearchForTarger();
-		MoveForTaget();
+		while(true)
+		{
+			SearchForTarger();
+			MoveForTaget();
+			yield return new WaitForSeconds(interval);
+		}
 	}
 
 	void SearchForTarger()

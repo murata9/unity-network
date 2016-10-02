@@ -47,6 +47,14 @@ public class PlayerShooting :  NetworkBehaviour{
 				// 名前とダメージ量を引数にメソッド実行
 				CmdTellServerWhoWasShow(uIdentity, damage);
 			}
+			else if (hit.transform.tag == "Zombie")
+			{
+				// ゾンビを射撃
+				// 名前を取得
+				string uIdentity = hit.transform.name;
+				// 名前とダメージ量を引数にメソッド実行
+				CmdTellServerWhichZombieWasShow(uIdentity, damage);
+			}
 		}
 	}
 
@@ -55,14 +63,22 @@ public class PlayerShooting :  NetworkBehaviour{
 	{
 		// 敵プレイヤーの名前でGameObjectを取得
 		GameObject go = GameObject.Find(uniqueID);
+		if (GameManagerRefarences.NullCheck(go, "playerID" + uniqueID)) return;
 		// ダメージを与える
-		PlayerHealth  playerHealth = go.GetComponent<PlayerHealth>();
-		if (playerHealth == null)
-		{
-			Debug.LogError("playerHealth is Null!");
-			return;
-		}
+		PlayerHealth playerHealth = go.GetComponent<PlayerHealth>();
+		if (GameManagerRefarences.NullCheck(playerHealth, "PlayerHealth")) return;
 		playerHealth.DeductHealth(dmg);
+	}
 
+	[Command]
+	void CmdTellServerWhichZombieWasShow(string uniqueID, int dmg)
+	{
+		// ゾンビIDでGameObjectを取得
+		GameObject go = GameObject.Find(uniqueID);
+		if (GameManagerRefarences.NullCheck(go, "zombieID" + uniqueID)) return;
+		// ダメージを与える
+		ZombieHealth zombieHealth = go.GetComponent<ZombieHealth>();
+		if (GameManagerRefarences.NullCheck(zombieHealth, "ZombieHealth")) return;
+		zombieHealth.DeductHealth(dmg);
 	}
 }
