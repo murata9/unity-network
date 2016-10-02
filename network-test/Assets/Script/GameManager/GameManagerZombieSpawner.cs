@@ -21,9 +21,12 @@ public class GameManagerZombieSpawner : NetworkBehaviour {
 
 	void SpawnZombies()
 	{
-		// counter
-
+		counter++;
 		GameObject zombie = GameObject.Instantiate(zombiePrefab, zombieSpawn.transform.position, Quaternion.identity) as GameObject;
 		NetworkServer.Spawn(zombie);
+		// ZombieにIDをつけていく
+		ZombieID zombieID = zombie.GetComponent<ZombieID>();
+		if (GameManagerRefarences.NullCheck(zombieID, "zombieID")) return;
+		zombieID.zombieID = "Zombie " + counter.ToString();
 	}
 }
